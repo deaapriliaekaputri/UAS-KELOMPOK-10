@@ -77,3 +77,21 @@ const keranjang: ItemKeranjang[] = [];
 // Konstanta tarif.
 const TARIF_PAJAK: number = 10;
 const BIAYA_LAYANAN: number = 3000;
+
+// ======================================================
+// FUNGSI INPUT
+// ======================================================
+
+// Fungsi untuk menerima input dari pengguna.
+function tanya(pertanyaan: string): Promise<string> {
+    return new Promise((resolve) => {
+        terminal.question(pertanyaan, (jawaban: string) => {
+            resolve(jawaban.trim());
+        });
+    });
+}
+
+// Fungsi untuk mengubah input menjadi angka.
+function inputAngka(teks: string): number {
+    return Number(teks);
+}
