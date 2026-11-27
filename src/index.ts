@@ -138,3 +138,34 @@ function hitungJumlahPorsi(): number {
     return jumlah;
 }
 
+// Fungsi untuk menghitung seluruh biaya pesanan.
+function hitungRincian(adalahMember: boolean): Rincian {
+    const subtotal: number = hitungSubtotal();
+    const jumlahPorsi: number = hitungJumlahPorsi();
+    let diskonPersen: number = 0;
+
+    // Menentukan diskon berdasarkan status member, subtotal, dan jumlah porsi.
+    if (adalahMember) {
+        diskonPersen = jumlahPorsi >= 5 ? 15 : 10;
+    } else if (subtotal >= 100000) {
+        diskonPersen = 5;
+    } else {
+        diskonPersen = 0;
+    }
+
+    const nilaiDiskon: number = Math.round(subtotal * diskonPersen / 100);
+    const setelahDiskon: number = subtotal - nilaiDiskon;
+    const pajak: number = Math.round(setelahDiskon * TARIF_PAJAK / 100);
+    const biayaLayanan: number = setelahDiskon > 0 ? BIAYA_LAYANAN : 0;
+    const total: number = setelahDiskon + pajak + biayaLayanan;
+
+    return {
+        subtotal,
+        diskonPersen,
+        nilaiDiskon,
+        setelahDiskon,
+        pajak,
+        biayaLayanan,
+        total
+    };
+}
