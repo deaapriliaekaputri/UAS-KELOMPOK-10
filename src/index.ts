@@ -276,3 +276,20 @@ main().catch((error: unknown) => {
     console.error("Terjadi kesalahan:", error);
     terminal.close();
 });
+
+interface HasilValidasi {
+    valid: boolean;
+    pesan: string;
+}
+
+// Fungsi untuk memeriksa bahwa teks yang diinput tidak kosong.
+// Parameter : teks (isi input), namaField (nama kolom untuk pesan error).
+// Return    : HasilValidasi.
+function validasiTeksTidakKosong(teks: string, namaField: string): HasilValidasi {
+    // trim() membuang spasi di awal/akhir, sehingga "   " juga dianggap kosong.
+    if (teks.trim() === "") {
+        return { valid: false, pesan: `${namaField} tidak boleh kosong.` };
+    }
+
+    return { valid: true, pesan: "" };
+}
