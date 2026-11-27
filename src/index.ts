@@ -169,3 +169,15 @@ function hitungRincian(adalahMember: boolean): Rincian {
         total
     };
 }
+
+// Fungsi untuk menampilkan ringkasan biaya.
+function tampilkanRincian(rincian: Rincian): void {
+    console.log("\n" + garis("-"));
+    console.log(`Subtotal        : ${formatRupiah(rincian.subtotal)}`);
+    console.log(`Diskon (${rincian.diskonPersen}%).padEnd(16) + : -${formatRupiah(rincian.nilaiDiskon)}`);
+    console.log(`Pajak (${TARIF_PAJAK}%).padEnd(16) + : ${formatRupiah(rincian.pajak)}`);
+    console.log(`Biaya layanan   : ${formatRupiah(rincian.biayaLayanan)}`);
+    console.log(garis("-"));
+    console.log(`TOTAL BAYAR     : ${formatRupiah(rincian.total)}`);
+    console.log(garis("-"));
+}
