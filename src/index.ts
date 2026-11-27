@@ -95,3 +95,89 @@ function tanya(pertanyaan: string): Promise<string> {
 function inputAngka(teks: string): number {
     return Number(teks);
 }
+
+// FUNGSI FORMAT
+
+// Fungsi untuk memformat angka menjadi Rupiah.
+function formatRupiah(angka: number): string {
+    return "Rp" + angka.toLocaleString("id-ID");
+}
+
+// Fungsi untuk membuat garis pemisah.
+function garis(karakter: string = "-", panjang: number = 50): string {
+    return karakter.repeat(panjang);
+}
+
+// Fungsi untuk membuat nomor pesanan acak.
+function buatNomorPesanan(): string {
+    const angka: number = Math.floor(100000 + Math.random() * 900000);
+    return "FNB-" + angka;
+}
+
+// FUNGSI PERHITUNGAN
+
+// Fungsi untuk menghitung subtotal seluruh item di keranjang.
+function hitungSubtotal(): number {
+    let subtotal: number = 0;
+
+    for (const item of keranjang) {
+        subtotal += item.harga * item.jumlah;
+    }
+
+    return subtotal;
+}
+
+// Fungsi untuk menghitung jumlah seluruh porsi di keranjang.
+function hitungJumlahPorsi(): number {
+    let jumlah: number = 0;
+
+    for (const item of keranjang) {
+        jumlah += item.jumlah;
+    }
+
+    return jumlah;
+}
+
+// Fungsi untuk menghitung seluruh biaya pesanan.
+function hitungRincian(adalahMember: boolean): Rincian {
+    const subtotal: number = hitungSubtotal();
+    const jumlahPorsi: number = hitungJumlahPorsi();
+    let diskonPersen: number = 0;
+
+    // Menentukan diskon berdasarkan status member, subtotal, dan jumlah porsi.
+    if (adalahMember) {
+        diskonPersen = jumlahPorsi >= 5 ? 15 : 10;
+    } else if (subtotal >= 100000) {
+        diskonPersen = 5;
+    } else {
+        diskonPersen = 0;
+    }
+
+    const nilaiDiskon: number = Math.round(subtotal * diskonPersen / 100);
+    const setelahDiskon: number = subtotal - nilaiDiskon;
+    const pajak: number = Math.round(setelahDiskon * TARIF_PAJAK / 100);
+    const biayaLayanan: number = setelahDiskon > 0 ? BIAYA_LAYANAN : 0;
+    const total: number = setelahDiskon + pajak + biayaLayanan;
+
+    return {
+        subtotal,
+        diskonPersen,
+        nilaiDiskon,
+        setelahDiskon,
+        pajak,
+        biayaLayanan,
+        total
+    };
+}
+
+// Fungsi untuk menampilkan ringkasan biaya.
+function tampilkanRincian(rincian: Rincian): void {
+    console.log("\n" + garis("-"));
+    console.log(`Subtotal        : ${formatRupiah(rincian.subtotal)}`);
+    console.log(`Diskon (${rincian.diskonPersen}%).padEnd(16) + : -${formatRupiah(rincian.nilaiDiskon)}`);
+    console.log(`Pajak (${TARIF_PAJAK}%).padEnd(16) + : ${formatRupiah(rincian.pajak)}`);
+    console.log(`Biaya layanan   : ${formatRupiah(rincian.biayaLayanan)}`);
+    console.log(garis("-"));
+    console.log(`TOTAL BAYAR     : ${formatRupiah(rincian.total)}`);
+    console.log(garis("-"));
+}
