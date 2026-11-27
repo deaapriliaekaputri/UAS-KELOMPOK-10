@@ -332,3 +332,29 @@ function validasiJumlah(teks: string, stokTersedia: number): HasilValidasi {
     // Lolos semua pemeriksaan.
     return { valid: true, pesan: "" };
 }
+
+// Fungsi untuk bertanya ya/tidak dan mengulang sampai jawaban valid.
+// Parameter : pertanyaan (teks yang ditampilkan ke pengguna).
+// Return    : true jika menjawab y/ya, false jika menjawab n/tidak.
+async function tanyaYaTidak(pertanyaan: string): Promise<boolean> {
+    let jawabanValid: boolean = false;
+    let hasil: boolean = false;
+
+    // Ulangi pertanyaan sampai pengguna menjawab y atau n.
+    while (!jawabanValid) {
+        const jawaban: string = (await tanya(pertanyaan)).toLowerCase();
+
+        if (jawaban === "y" || jawaban === "ya") {
+            hasil = true;
+            jawabanValid = true;
+        } else if (jawaban === "n" || jawaban === "tidak") {
+            hasil = false;
+            jawabanValid = true;
+        } else {
+            // Jawaban lain ditolak, pertanyaan diulang pada putaran berikutnya.
+            console.log("Jawaban tidak valid. Ketik y atau n.");
+        }
+    }
+
+    return hasil;
+}
