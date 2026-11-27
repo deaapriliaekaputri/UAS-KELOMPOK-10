@@ -276,3 +276,85 @@ main().catch((error: unknown) => {
     console.error("Terjadi kesalahan:", error);
     terminal.close();
 });
+
+interface HasilValidasi {
+    valid: boolean;
+    pesan: string;
+}
+
+// Fungsi untuk memeriksa bahwa teks yang diinput tidak kosong.
+// Parameter : teks (isi input), namaField (nama kolom untuk pesan error).
+// Return    : HasilValidasi.
+function validasiTeksTidakKosong(teks: string, namaField: string): HasilValidasi {
+    // trim() membuang spasi di awal/akhir, sehingga "   " juga dianggap kosong.
+    if (teks.trim() === "") {
+        return { valid: false, pesan: `${namaField} tidak boleh kosong.` };
+    }
+
+    return { valid: true, pesan: "" };
+}
+
+// Fungsi untuk memvalidasi jumlah pesanan terhadap stok yang tersedia.
+// Pemeriksaan dilakukan berurutan dan berhenti di kesalahan pertama:
+// kosong -> bukan angka -> negatif -> bukan bilangan bulat/nol -> melebihi stok.
+// Parameter : teks (input jumlah), stokTersedia (batas maksimal jumlah).
+// Return    : HasilValidasi.
+function validasiJumlah(teks: string, stokTersedia: number): HasilValidasi {
+    // 1. Tolak input kosong.
+    if (teks.trim() === "") {
+        return { valid: false, pesan: "Jumlah tidak boleh kosong." };
+    }
+
+    // Ubah teks menjadi angka; hasilnya NaN jika teks bukan angka (misal "abc").
+    const angka: number = inputAngka(teks);
+
+    // 2. Tolak input yang bukan angka.
+    if (isNaN(angka)) {
+        return { valid: false, pesan: "Jumlah harus berupa angka." };
+    }
+
+    // 3. Tolak nilai negatif.
+    if (angka < 0) {
+        return { valid: false, pesan: "Jumlah tidak boleh negatif." };
+    }
+
+    // 4. Tolak desimal (misal 1.5) atau nol; jumlah harus bilangan bulat minimal 1.
+    //    Memakai dua kondisi digabung dengan operator logika ATAU (||) dan NOT (!).
+    if (!Number.isInteger(angka) || angka === 0) {
+        return { valid: false, pesan: "Jumlah harus bilangan bulat minimal 1." };
+    }
+
+    // 5. Tolak jumlah yang melebihi stok menu.
+    if (angka > stokTersedia) {
+        return { valid: false, pesan: `Jumlah melebihi stok (tersedia: ${stokTersedia}).` };
+    }
+
+    // Lolos semua pemeriksaan.
+    return { valid: true, pesan: "" };
+}
+
+// Fungsi untuk bertanya ya/tidak dan mengulang sampai jawaban valid.
+// Parameter : pertanyaan (teks yang ditampilkan ke pengguna).
+// Return    : true jika menjawab y/ya, false jika menjawab n/tidak.
+async function tanyaYaTidak(pertanyaan: string): Promise<boolean> {
+    let jawabanValid: boolean = false;
+    let hasil: boolean = false;
+
+    // Ulangi pertanyaan sampai pengguna menjawab y atau n.
+    while (!jawabanValid) {
+        const jawaban: string = (await tanya(pertanyaan)).toLowerCase();
+
+        if (jawaban === "y" || jawaban === "ya") {
+            hasil = true;
+            jawabanValid = true;
+        } else if (jawaban === "n" || jawaban === "tidak") {
+            hasil = false;
+            jawabanValid = true;
+        } else {
+            // Jawaban lain ditolak, pertanyaan diulang pada putaran berikutnya.
+            console.log("Jawaban tidak valid. Ketik y atau n.");
+        }
+    }
+
+    return hasil;
+}
