@@ -181,3 +181,98 @@ function tampilkanRincian(rincian: Rincian): void {
     console.log(`TOTAL BAYAR     : ${formatRupiah(rincian.total)}`);
     console.log(garis("-"));
 }
+
+// PROGRAM UTAMA
+// ======================================================
+
+async function main(): Promise<void> {
+    let berjalan: boolean = true;
+
+    console.log("\n" + garis("="));
+    console.log("  PROGRAM PEMESANAN DAN PEMBAYARAN MAKANAN BIOSKOP");
+    console.log(garis("="));
+
+    // Perulangan menu utama sampai pengguna memilih keluar.
+    while (berjalan) {
+        console.log("\n=========== MENU UTAMA ===========");
+        console.log("1. Lihat daftar menu");
+        console.log("2. Tambah pesanan");
+        console.log("3. Lihat keranjang");
+        console.log("4. Ubah jumlah pesanan");
+        console.log("5. Hapus pesanan");
+        console.log("6. Checkout dan bayar");
+        console.log("7. Lihat detail menu (berdasarkan kode)");
+        console.log("8. Cari menu (kata kunci dan filter)");
+        console.log("0. Keluar");
+
+        const pilihan: string = await tanya("Pilih menu (0-8): ");
+
+        switch (pilihan) {
+            case "1":
+                // Fitur belum tersedia, akan dibuat pada Progress 4.
+                console.log("Fitur ini belum tersedia (Progress 4).");
+                break;
+
+            case "2":
+                // Fitur belum tersedia, akan dibuat pada Progress 3.
+                console.log("Fitur ini belum tersedia (Progress 3).");
+                break;
+
+            case "3":
+                // Fitur belum tersedia, akan dibuat pada Progress 4.
+                console.log("Fitur ini belum tersedia (Progress 4).");
+                break;
+
+            case "4":
+                // Fitur belum tersedia, akan dibuat pada Progress 5.
+                console.log("Fitur ini belum tersedia (Progress 5).");
+                break;
+
+            case "5":
+                // Fitur belum tersedia, akan dibuat pada Progress 5.
+                console.log("Fitur ini belum tersedia (Progress 5).");
+                break;
+
+            case "6":
+                // Fitur belum tersedia, akan dibuat pada Progress 6.
+                console.log("Fitur ini belum tersedia (Progress 6).");
+                break;
+
+            case "7":
+                // Fitur belum tersedia, akan dibuat pada Progress 4.
+                console.log("Fitur ini belum tersedia (Progress 4).");
+                break;
+
+            case "8":
+                // Fitur belum tersedia, akan dibuat pada Progress 6.
+                console.log("Fitur ini belum tersedia (Progress 6).");
+                break;
+
+            case "0":
+                if (keranjang.length > 0) {
+                    const yakin: string = (
+                        await tanya("Keranjang belum dibayar. Yakin keluar? (ya/tidak): ")
+                    ).toLowerCase();
+
+                    if (yakin !== "ya") {
+                        break;
+                    }
+                }
+                berjalan = false;
+                break;
+
+            default:
+                console.log("Pilihan menu tidak valid.");
+                break;
+        }
+    }
+
+    console.log("\nTerima kasih telah menggunakan program ini.");
+    terminal.close();
+}
+
+// Menjalankan fungsi utama dan menangani kesalahan.
+main().catch((error: unknown) => {
+    console.error("Terjadi kesalahan:", error);
+    terminal.close();
+});
