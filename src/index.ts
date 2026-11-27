@@ -113,3 +113,28 @@ function buatNomorPesanan(): string {
     const angka: number = Math.floor(100000 + Math.random() * 900000);
     return "FNB-" + angka;
 }
+
+// FUNGSI PERHITUNGAN
+
+// Fungsi untuk menghitung subtotal seluruh item di keranjang.
+function hitungSubtotal(): number {
+    let subtotal: number = 0;
+
+    for (const item of keranjang) {
+        subtotal += item.harga * item.jumlah;
+    }
+
+    return subtotal;
+}
+
+// Fungsi untuk menghitung jumlah seluruh porsi di keranjang.
+function hitungJumlahPorsi(): number {
+    let jumlah: number = 0;
+
+    for (const item of keranjang) {
+        jumlah += item.jumlah;
+    }
+
+    return jumlah;
+}
+
