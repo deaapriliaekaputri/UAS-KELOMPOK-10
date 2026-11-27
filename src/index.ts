@@ -95,3 +95,21 @@ function tanya(pertanyaan: string): Promise<string> {
 function inputAngka(teks: string): number {
     return Number(teks);
 }
+
+// FUNGSI FORMAT
+
+// Fungsi untuk memformat angka menjadi Rupiah.
+function formatRupiah(angka: number): string {
+    return "Rp" + angka.toLocaleString("id-ID");
+}
+
+// Fungsi untuk membuat garis pemisah.
+function garis(karakter: string = "-", panjang: number = 50): string {
+    return karakter.repeat(panjang);
+}
+
+// Fungsi untuk membuat nomor pesanan acak.
+function buatNomorPesanan(): string {
+    const angka: number = Math.floor(100000 + Math.random() * 900000);
+    return "FNB-" + angka;
+}
