@@ -358,3 +358,131 @@ async function tanyaYaTidak(pertanyaan: string): Promise<boolean> {
 
     return hasil;
 }
+
+// Fungsi untuk mencari menu berdasarkan kode (tidak peka huruf besar/kecil).
+// Parameter : kode (misal "m01" atau "M01").
+// Return    : objek MenuItem jika ditemukan, undefined jika tidak ada.
+function cariMenuByKode(kode: string): MenuItem | undefined {
+    // toUpperCase() membuat "m01" tetap cocok dengan kode "M01" di daftarMenu.
+    return daftarMenu.find((menu) => menu.kode === kode.toUpperCase());
+}
+
+// Fungsi untuk memeriksa duplikasi ID (kode menu) di keranjang.
+// Parameter : kode (kode menu yang akan ditambahkan).
+// Return    : true jika kode sudah ada di keranjang, false jika belum.
+function apakahKodeSudahAdaDiKeranjang(kode: string): boolean {
+    // findIndex mengembalikan -1 jika tidak ada item yang cocok.
+    return keranjang.findIndex((item) => item.kode === kode) !== -1;
+}
+
+// Fungsi untuk menambahkan item baru ke keranjang (operasi Create).
+// Parameter : menu (menu yang dipilih), jumlah (jumlah porsi yang sudah tervalidasi).
+// Return    : item yang baru disimpan, agar bisa ditampilkan sebagai konfirmasi.
+function tambahKeKeranjang(menu: MenuItem, jumlah: number): ItemKeranjang {
+    // Menyalin data yang dibutuhkan dari menu ke bentuk item keranjang.
+    const itemBaru: ItemKeranjang = {
+        kode: menu.kode,
+        nama: menu.nama,
+        harga: menu.harga,
+        jumlah: jumlah
+    };
+
+    // push() menambahkan item baru ke akhir array keranjang.
+    keranjang.push(itemBaru);
+    return itemBaru;
+}
+
+// Fungsi untuk menghitung subtotal satu item (harga x jumlah).
+function hitungSubtotalItem(item: ItemKeranjang): number {
+    return item.harga * item.jumlah;
+}
+
+// Fungsi untuk menampilkan daftar kode menu ringkas sebagai panduan input.
+// (Tampilan daftar menu lengkap dibuat pada Progress 4.)
+function tampilkanPilihanKode(): void {
+    console.log("\nKode menu yang tersedia:");
+
+    // Perulangan for...of untuk menampilkan setiap menu satu per satu.
+    for (const menu of daftarMenu) {
+        // padEnd() merapikan kolom agar sejajar.
+        console.log(
+            `  ${menu.kode.padEnd(4)} ${menu.nama.padEnd(24)} ${formatRupiah(menu.harga).padEnd(10)} (stok: ${menu.stok})`
+        );
+    }
+}
+
+// Fungsi untuk menampilkan pesan konfirmasi setelah item berhasil ditambahkan.
+function tampilkanItemDitambahkan(item: ItemKeranjang): void {
+    console.log(`Berhasil menambahkan ${item.jumlah} x ${item.nama} (${formatRupiah(hitungSubtotalItem(item))}).`);
+}
+
+// Fungsi untuk menampilkan ringkasan singkat isi keranjang.
+// (Tampilan keranjang lengkap dibuat pada Progress 4.)
+function tampilkanRingkasanKeranjang(): void {
+    console.log(`\nIsi keranjang: ${keranjang.length} jenis item | Subtotal: ${formatRupiah(hitungSubtotal())}`);
+}
+// Fungsi utama fitur Create: menambah item ke keranjang dengan validasi.
+// Alur tiap putaran: pilih kode -> validasi kode -> cek duplikat dan stok
+// -> input jumlah -> validasi jumlah -> simpan -> tanya tambah lagi.
+// Jika ada validasi yang gagal, pesan ditampilkan lalu putaran diulang dari awal.
+async function prosesTambahPesanan(): Promise<void> {
+    // Penanda apakah pengguna masih ingin menambah item.
+    let lanjut: boolean = true;
+
+    console.log("\n=========== TAMBAH PESANAN ===========");
+
+    // Ulangi penambahan sampai pengguna batal atau tidak ingin menambah lagi.
+    while (lanjut) {
+        tampilkanPilihanKode();
+        const kodeInput: string = await tanya("\nMasukkan kode menu (0 = batal): ");
+
+        // Keluar dari fitur jika pengguna memilih batal.
+        if (kodeInput === "0") {
+            break;
+        }
+
+        // Validasi 1: kode tidak boleh kosong.
+        const cekKode: HasilValidasi = validasiTeksTidakKosong(kodeInput, "Kode menu");
+        if (!cekKode.valid) {
+            console.log(cekKode.pesan);
+            continue; // kembali ke awal perulangan (minta kode lagi)
+        }
+
+        // Validasi 2: kode harus ada di daftar menu.
+        const menu: MenuItem | undefined = cariMenuByKode(kodeInput);
+        if (menu === undefined) {
+            console.log(`Kode menu "${kodeInput}" tidak ditemukan.`);
+            continue;
+        }
+
+        // Validasi 3: tolak duplikasi ID, menu yang sudah ada di keranjang tidak boleh ditambah dua kali.
+        if (apakahKodeSudahAdaDiKeranjang(menu.kode)) {
+            console.log(`${menu.nama} sudah ada di keranjang. Gunakan menu "Ubah jumlah pesanan".`);
+            continue;
+        }
+
+        // Validasi 4: menu yang stoknya habis tidak bisa dipesan.
+        if (menu.stok <= 0) {
+            console.log(`Stok ${menu.nama} habis.`);
+            continue;
+        }
+
+        // Input jumlah, lalu validasi 5: jumlah harus angka bulat valid dan tidak melebihi stok.
+        const jumlahInput: string = await tanya(`Jumlah ${menu.nama} (stok ${menu.stok}): `);
+        const cekJumlah: HasilValidasi = validasiJumlah(jumlahInput, menu.stok);
+        if (!cekJumlah.valid) {
+            console.log(cekJumlah.pesan);
+            continue;
+        }
+
+        // Semua validasi lolos: simpan item ke keranjang dan tampilkan konfirmasi.
+        const itemBaru: ItemKeranjang = tambahKeKeranjang(menu, inputAngka(jumlahInput));
+        tampilkanItemDitambahkan(itemBaru);
+
+        // Tanya apakah ingin menambah item lain (jawaban y/n sudah divalidasi).
+        lanjut = await tanyaYaTidak("Tambah item lain? (y/n): ");
+    }
+
+    // Tampilkan ringkasan keranjang setelah selesai menambah.
+    tampilkanRingkasanKeranjang();
+}
