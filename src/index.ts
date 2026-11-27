@@ -421,3 +421,68 @@ function tampilkanItemDitambahkan(item: ItemKeranjang): void {
 function tampilkanRingkasanKeranjang(): void {
     console.log(`\nIsi keranjang: ${keranjang.length} jenis item | Subtotal: ${formatRupiah(hitungSubtotal())}`);
 }
+// Fungsi utama fitur Create: menambah item ke keranjang dengan validasi.
+// Alur tiap putaran: pilih kode -> validasi kode -> cek duplikat dan stok
+// -> input jumlah -> validasi jumlah -> simpan -> tanya tambah lagi.
+// Jika ada validasi yang gagal, pesan ditampilkan lalu putaran diulang dari awal.
+async function prosesTambahPesanan(): Promise<void> {
+    // Penanda apakah pengguna masih ingin menambah item.
+    let lanjut: boolean = true;
+
+    console.log("\n=========== TAMBAH PESANAN ===========");
+
+    // Ulangi penambahan sampai pengguna batal atau tidak ingin menambah lagi.
+    while (lanjut) {
+        tampilkanPilihanKode();
+        const kodeInput: string = await tanya("\nMasukkan kode menu (0 = batal): ");
+
+        // Keluar dari fitur jika pengguna memilih batal.
+        if (kodeInput === "0") {
+            break;
+        }
+
+        // Validasi 1: kode tidak boleh kosong.
+        const cekKode: HasilValidasi = validasiTeksTidakKosong(kodeInput, "Kode menu");
+        if (!cekKode.valid) {
+            console.log(cekKode.pesan);
+            continue; // kembali ke awal perulangan (minta kode lagi)
+        }
+
+        // Validasi 2: kode harus ada di daftar menu.
+        const menu: MenuItem | undefined = cariMenuByKode(kodeInput);
+        if (menu === undefined) {
+            console.log(`Kode menu "${kodeInput}" tidak ditemukan.`);
+            continue;
+        }
+
+        // Validasi 3: tolak duplikasi ID, menu yang sudah ada di keranjang tidak boleh ditambah dua kali.
+        if (apakahKodeSudahAdaDiKeranjang(menu.kode)) {
+            console.log(`${menu.nama} sudah ada di keranjang. Gunakan menu "Ubah jumlah pesanan".`);
+            continue;
+        }
+
+        // Validasi 4: menu yang stoknya habis tidak bisa dipesan.
+        if (menu.stok <= 0) {
+            console.log(`Stok ${menu.nama} habis.`);
+            continue;
+        }
+
+        // Input jumlah, lalu validasi 5: jumlah harus angka bulat valid dan tidak melebihi stok.
+        const jumlahInput: string = await tanya(`Jumlah ${menu.nama} (stok ${menu.stok}): `);
+        const cekJumlah: HasilValidasi = validasiJumlah(jumlahInput, menu.stok);
+        if (!cekJumlah.valid) {
+            console.log(cekJumlah.pesan);
+            continue;
+        }
+
+        // Semua validasi lolos: simpan item ke keranjang dan tampilkan konfirmasi.
+        const itemBaru: ItemKeranjang = tambahKeKeranjang(menu, inputAngka(jumlahInput));
+        tampilkanItemDitambahkan(itemBaru);
+
+        // Tanya apakah ingin menambah item lain (jawaban y/n sudah divalidasi).
+        lanjut = await tanyaYaTidak("Tambah item lain? (y/n): ");
+    }
+
+    // Tampilkan ringkasan keranjang setelah selesai menambah.
+    tampilkanRingkasanKeranjang();
+}
