@@ -374,3 +374,16 @@ function apakahKodeSudahAdaDiKeranjang(kode: string): boolean {
     // findIndex mengembalikan -1 jika tidak ada item yang cocok.
     return keranjang.findIndex((item) => item.kode === kode) !== -1;
 }
+
+// Fungsi untuk menambahkan item baru ke keranjang (operasi Create).
+// Parameter : menu (menu yang dipilih), jumlah (jumlah porsi yang sudah tervalidasi).
+// Return    : item yang baru disimpan, agar bisa ditampilkan sebagai konfirmasi.
+function tambahKeKeranjang(menu: MenuItem, jumlah: number): ItemKeranjang {
+    // Menyalin data yang dibutuhkan dari menu ke bentuk item keranjang.
+    const itemBaru: ItemKeranjang = {
+        kode: menu.kode,
+        nama: menu.nama,
+        harga: menu.harga,
+        jumlah: jumlah
+    };
+    
