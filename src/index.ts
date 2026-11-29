@@ -270,3 +270,9 @@ async function main(): Promise<void> {
     console.log("\nTerima kasih telah menggunakan program ini.");
     terminal.close();
 }
+
+// Menjalankan fungsi utama dan menangani kesalahan.
+main().catch((error: unknown) => {
+    console.error("Terjadi kesalahan:", error);
+    terminal.close();
+});
