@@ -358,3 +358,11 @@ async function tanyaYaTidak(pertanyaan: string): Promise<boolean> {
 
     return hasil;
 }
+
+// Fungsi untuk mencari menu berdasarkan kode (tidak peka huruf besar/kecil).
+// Parameter : kode (misal "m01" atau "M01").
+// Return    : objek MenuItem jika ditemukan, undefined jika tidak ada.
+function cariMenuByKode(kode: string): MenuItem | undefined {
+    // toUpperCase() membuat "m01" tetap cocok dengan kode "M01" di daftarMenu.
+    return daftarMenu.find((menu) => menu.kode === kode.toUpperCase());
+}
