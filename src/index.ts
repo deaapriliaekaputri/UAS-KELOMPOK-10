@@ -415,3 +415,9 @@ function tampilkanPilihanKode(): void {
 function tampilkanItemDitambahkan(item: ItemKeranjang): void {
     console.log(Berhasil menambahkan ${item.jumlah} x ${item.nama} (${formatRupiah(hitungSubtotalItem(item))}).);
 }
+
+// Fungsi untuk menampilkan ringkasan singkat isi keranjang.
+// (Tampilan keranjang lengkap dibuat pada Progress 4.)
+function tampilkanRingkasanKeranjang(): void {
+    console.log(\nIsi keranjang: ${keranjang.length} jenis item | Subtotal: ${formatRupiah(hitungSubtotal())});
+}
