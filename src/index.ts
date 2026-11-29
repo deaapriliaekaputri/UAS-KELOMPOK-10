@@ -396,3 +396,17 @@ function tambahKeKeranjang(menu: MenuItem, jumlah: number): ItemKeranjang {
 function hitungSubtotalItem(item: ItemKeranjang): number {
     return item.harga * item.jumlah;
 }
+
+// Fungsi untuk menampilkan daftar kode menu ringkas sebagai panduan input.
+// (Tampilan daftar menu lengkap dibuat pada Progress 4.)
+function tampilkanPilihanKode(): void {
+    console.log("\nKode menu yang tersedia:");
+
+    // Perulangan for...of untuk menampilkan setiap menu satu per satu.
+    for (const menu of daftarMenu) {
+        // padEnd() merapikan kolom agar sejajar.
+        console.log(
+            `  ${menu.kode.padEnd(4)} ${menu.nama.padEnd(24)} ${formatRupiah(menu.harga).padEnd(10)} (stok: ${menu.stok})`
+        );
+    }
+}
