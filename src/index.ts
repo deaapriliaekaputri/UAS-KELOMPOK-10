@@ -366,3 +366,11 @@ function cariMenuByKode(kode: string): MenuItem | undefined {
     // toUpperCase() membuat "m01" tetap cocok dengan kode "M01" di daftarMenu.
     return daftarMenu.find((menu) => menu.kode === kode.toUpperCase());
 }
+
+// Fungsi untuk memeriksa duplikasi ID (kode menu) di keranjang.
+// Parameter : kode (kode menu yang akan ditambahkan).
+// Return    : true jika kode sudah ada di keranjang, false jika belum.
+function apakahKodeSudahAdaDiKeranjang(kode: string): boolean {
+    // findIndex mengembalikan -1 jika tidak ada item yang cocok.
+    return keranjang.findIndex((item) => item.kode === kode) !== -1;
+}
