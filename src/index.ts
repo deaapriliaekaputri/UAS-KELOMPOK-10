@@ -413,11 +413,11 @@ function tampilkanPilihanKode(): void {
 
 // Fungsi untuk menampilkan pesan konfirmasi setelah item berhasil ditambahkan.
 function tampilkanItemDitambahkan(item: ItemKeranjang): void {
-    console.log(Berhasil menambahkan ${item.jumlah} x ${item.nama} (${formatRupiah(hitungSubtotalItem(item))}).);
+    console.log(`Berhasil menambahkan ${item.jumlah} x ${item.nama} (${formatRupiah(hitungSubtotalItem(item))}).`);
 }
 
 // Fungsi untuk menampilkan ringkasan singkat isi keranjang.
 // (Tampilan keranjang lengkap dibuat pada Progress 4.)
 function tampilkanRingkasanKeranjang(): void {
-    console.log(\nIsi keranjang: ${keranjang.length} jenis item | Subtotal: ${formatRupiah(hitungSubtotal())});
+    console.log(`\nIsi keranjang: ${keranjang.length} jenis item | Subtotal: ${formatRupiah(hitungSubtotal())}`);
 }
