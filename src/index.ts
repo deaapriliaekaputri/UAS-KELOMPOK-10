@@ -410,3 +410,8 @@ function tampilkanPilihanKode(): void {
         );
     }
 }
+
+// Fungsi untuk menampilkan pesan konfirmasi setelah item berhasil ditambahkan.
+function tampilkanItemDitambahkan(item: ItemKeranjang): void {
+    console.log(Berhasil menambahkan ${item.jumlah} x ${item.nama} (${formatRupiah(hitungSubtotalItem(item))}).);
+}
