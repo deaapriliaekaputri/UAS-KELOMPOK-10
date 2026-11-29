@@ -386,4 +386,8 @@ function tambahKeKeranjang(menu: MenuItem, jumlah: number): ItemKeranjang {
         harga: menu.harga,
         jumlah: jumlah
     };
-    
+
+    // push() menambahkan item baru ke akhir array keranjang.
+    keranjang.push(itemBaru);
+    return itemBaru;
+}
