@@ -391,3 +391,8 @@ function tambahKeKeranjang(menu: MenuItem, jumlah: number): ItemKeranjang {
     keranjang.push(itemBaru);
     return itemBaru;
 }
+
+// Fungsi untuk menghitung subtotal satu item (harga x jumlah).
+function hitungSubtotalItem(item: ItemKeranjang): number {
+    return item.harga * item.jumlah;
+}
